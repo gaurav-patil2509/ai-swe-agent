@@ -5,6 +5,7 @@ from app.application.services.chat_service import ChatService
 from app.core.config import settings
 from app.api.deps import get_llm_client
 from app.domain.entities.chat import ChatRequest, ChatResponse
+from app.infrastructure.llm.openrouter import OpenRouterLLM 
 
 router = APIRouter(
     prefix="/chat",
@@ -14,10 +15,11 @@ router = APIRouter(
 def get_chat_service(
         client: OpenAI = Depends(get_llm_client), 
     )->ChatService:
-    return ChatService(
-        client=client,
-        model= settings.llm_model
+    llm = OpenRouterLLM(
+          client= client,
+          model= settings.llm_model
     )
+    return ChatService( llm=llm )
 
 @router.post("", response_model=ChatResponse)
 def chat( request: ChatRequest, 
