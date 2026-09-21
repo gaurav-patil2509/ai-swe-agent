@@ -17,3 +17,5 @@ Thumbs.db
 htmlcov/
  
 data/
+
+test_*.py
