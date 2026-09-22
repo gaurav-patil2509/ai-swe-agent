@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     llm_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"
 
+    #Embedding model
+    embedding_model: str = "openai/text-embedding-3-small"
+
     # ChromaDB
     chroma_persist_dir: str = "./data/chroma"
 

@@ -9,7 +9,7 @@ class LocalCodeRepository:
         self.root_path = Path(root_path)
     
 
-    def list_file(self)->list[str]:
+    def list_files(self)->list[str]:
         files=[]
 
         for path in self.root_path.rglob("*"):
