@@ -288,68 +288,15 @@ python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 
 pip install -e ".[dev]"
-
-cp .env.example .env
-# edit .env with your LLM_API_KEY, LLM_BASE_URL, etc.
-
-python -m uvicorn app.main:app --reload
+cp .env.example .env            # then edit .env with your real LLM_API_KEY
 ```
 
-Once running, the interactive API docs (Swagger/OpenAPI) are available at `/docs` for exploring and trying endpoints directly.
+## Run
 
-## API
-
-Currently meaningful endpoints:
-
-```text
-GET  /api/v1/health
-POST /api/v1/chat
+```bash
+uvicorn app.main:app --reload
 ```
 
-Example `/api/v1/chat` request:
-
-```json
-{
-  "message": "What does the authenticate_user function do?"
-}
-```
-
-Example response:
-
-```json
-{
-  "response": "..."
-}
-```
-
-Full request/response schemas are available via the auto-generated docs at `/docs`.
-
-## Limitations
-
-- Retrieval is not yet wired end-to-end — indexing and querying exist as architecture, not yet as a complete, connected pipeline.
-- Chunking is line-based and not aware of code structure; a chunk can split a function awkwardly.
-- No agent/tool-use loop exists yet — the system does not yet take autonomous multi-step actions on a codebase.
-- No reranking, incremental indexing, or change detection yet — indexing is not optimized for repositories that change frequently.
-- No authentication, rate limiting, or deployment hardening yet — this is a development-stage project.
-
-## Project Philosophy
-
-This project is intentionally built incrementally — one reviewed, working piece at a time — rather than as a single large agent script. The guiding principles:
-
-- separation of concerns
-- testability
-- provider independence
-- explicit abstractions over implicit assumptions
-- secure-by-default filesystem access
-- modularity
-- replaceable infrastructure
-- incremental, milestone-based development
-- production-oriented architecture from the start, even while functionality is still partial
-
-## Contributing / Development Notes
-
-This is an actively developed solo project. Working conventions:
-
-- `domain/` and `application/` must never import from `infrastructure/` or `api/`.
-- Every infrastructure adapter implements a protocol defined in `domain/ports/`.
-- New capabilities are expected to land with tests, not just working demos.
+Visit:
+- http://127.0.0.1:8000/api/v1/health
+- http://127.0.0.1:8000/docs  (auto-generated OpenAPI docs)
