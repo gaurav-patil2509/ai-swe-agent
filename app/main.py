@@ -10,6 +10,7 @@ from fastapi import FastAPI
 
 from app.api.v1 import health
 from app.api.v1 import chat
+from app.api.v1 import codebase
 from app.core.config import settings
 from app.core.logging import configure_logging, get_logger
 
@@ -25,6 +26,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router, prefix="/api/v1") 
     app.include_router(chat.router, prefix="/api/v1")
+    app.include_router(codebase.router, prefix="/api/v1")
     
     logger.info("Application configured (env=%s)", settings.environment)
     return app
