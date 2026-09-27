@@ -7,6 +7,9 @@ class Tool:
 
     def description(self)->str:
         ...
-        
-    def execute(self, **kwargs)->str:
+
+    def parameters(self)->dict[str, Any]:
+        ...
+
+    def execute(self, **kwargs: Any)->str:
         ...
