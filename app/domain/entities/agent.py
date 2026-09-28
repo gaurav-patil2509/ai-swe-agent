@@ -9,4 +9,4 @@ class ToolCall:
 @dataclass
 class AgentResponse:
     content: str | None = None
-    tool_calls: ToolCall | None = None
+    tool_calls: list[ToolCall] | None = None

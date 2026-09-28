@@ -12,6 +12,7 @@ from app.infrastructure.llm.openrouter_embedding import OpenRouterEmbedding
 from app.infrastructure.vectorstore.chroma import ChromaVectorStore
 from app.application.tools.code_search_tool import CodeSearchTool
 from app.application.agents.code_agent import CodeAgent
+from app.application.tools.tool_registry import ToolRegistry
  
 router = APIRouter(
     prefix="/codebase",
@@ -47,10 +48,16 @@ def get_code_agent(
         retrieval_service= retrieval_service,
         context_builder= context_builder
     )
+
+    tool_registry = ToolRegistry(
+        tools= [
+                 code_search_tool   
+            ]
+    )
  
     return CodeAgent(
         llm= llm,
-        code_search_tool= code_search_tool
+        tool_registry= tool_registry
     )
  
 def get_code_qa_service(

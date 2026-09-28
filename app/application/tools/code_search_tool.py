@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.application.services.code_retrieval_service import (
-    CodeRetrievalService,
+    CodeRetrieval,
 )
 from app.application.services.context_builder import ContextBuilder
 
@@ -32,7 +32,7 @@ class CodeSearchTool:
 
     def __init__(
         self,
-        retrieval_service: CodeRetrievalService,
+        retrieval_service: CodeRetrieval,
         context_builder: ContextBuilder,
     ):
         self.retrieval_service = retrieval_service

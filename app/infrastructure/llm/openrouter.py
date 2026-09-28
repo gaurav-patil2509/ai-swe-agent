@@ -17,36 +17,44 @@ class OpenRouterLLM:
         return response.output_text
 
     def generate_with_tools(
-            self,
-            message: str,
-            tools: list[dict]
-    )-> AgentResponse:
-
+        self,
+        message: str,
+        tools: list[dict],
+    ) -> AgentResponse:
+ 
         response = self.client.responses.create(
-             model= self.model,
-             input= message, 
-             tools = tools, 
-             tool_choice= "auto"
+            model=self.model,
+            input=message,
+            tools=tools,
+            tool_choice="auto",
         )
-
-        tool_calls= []
-
+    
+        print("\n============RAW RESPONSE=============")
+        print(response)
+        print("======================================")
+    
+        tool_calls = []
+    
         for item in response.output:
+    
+            print("OUTPUT ITEM:", item)
+            print("ITEM TYPE:", item.type)
+    
             if item.type == "function_call":
-
+                print("FOUND FUNCTION CALL!")
+    
                 arguments = json.loads(item.arguments)
-
-                tool_calls.append{
+    
+                tool_calls.append(
                     ToolCall(
-                        name= item.name,
-                        arguments= arguments,
+                        name=item.name,
+                        arguments=arguments,
                     )
-                }    
-
-            if tool_calls:
-                return AgentResponse(
-                    tool_calls= tool_calls
-                )   
-            return AgentResponse(
-                content= response.output_text
-            )
+                )
+    
+        print("PARSED TOOL CALLS:", tool_calls)
+    
+        if tool_calls:
+            return AgentResponse(tool_calls=tool_calls)
+    
+        return AgentResponse(content=response.output_text)
