@@ -29,8 +29,10 @@ class CodebaseIndexer:
         # for chunk  in all_chunks:
         #     vector= self.embedding.embed(chunk.content)
         #     embeddings.append(vector)
+        
+        if not all_chunks:
+            return 0
 
- 
         embeddings = [
             self.embedding.embed(chunk.content)
             for chunk in all_chunks

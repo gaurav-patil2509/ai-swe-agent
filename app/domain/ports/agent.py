@@ -1,6 +1,6 @@
 from typing import Protocol
 
-class Agent:
+class Agent(Protocol):
 
     def run(self, task: str)->str:
         ...

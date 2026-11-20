@@ -13,7 +13,9 @@ from app.infrastructure.vectorstore.chroma import ChromaVectorStore
 from app.application.tools.code_search_tool import CodeSearchTool
 from app.application.agents.code_agent import CodeAgent
 from app.application.tools.tool_registry import ToolRegistry
- 
+from app.application.services.codebase_indexer import CodebaseIndexer
+from app.application.services.code_chunker import CodeChunker
+from app.infrastructure.filesystem.codebase_reader import LocalCodeRepository 
 router = APIRouter(
     prefix="/codebase",
     tags=["codebase"],
@@ -90,7 +92,32 @@ def get_code_qa_service(
         retrieval_service=retrieval_service,
         context_builder=context_builder,
     )
- 
+
+def get_codebase_indexer(
+    client: OpenAI = Depends(get_llm_client),
+) -> CodebaseIndexer:
+
+    repository = LocalCodeRepository(
+        root_path=settings.codebase_path
+    )
+
+    chunker = CodeChunker()
+
+    embedding = OpenRouterEmbedding(
+        client=client,
+        model=settings.embedding_model,
+    )
+
+    vector_store = ChromaVectorStore(
+        persist_dir=settings.chroma_persist_dir,
+    )
+
+    return CodebaseIndexer(
+        repository=repository,
+        chunker=chunker,
+        embedding=embedding,
+        vector_store=vector_store,
+    ) 
  
 @router.post("/ask", response_model=ChatResponse)
 def ask_codebase(
@@ -109,3 +136,14 @@ def code_agent(
     answer= agent.run(request.message)
 
     return ChatResponse(answer=answer)
+
+@router.post("/index")
+def index_codebase(
+    indexer: CodebaseIndexer = Depends(get_codebase_indexer),
+):
+    total_chunks = indexer.index()
+
+    return {
+        "message": "Codebase indexed successfully",
+        "total_chunks": total_chunks,
+    }

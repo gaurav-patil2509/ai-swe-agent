@@ -1,17 +1,18 @@
+
 from fastapi import Depends
-from app.infrastructure.llm.client import get_llm_client
 from openai import OpenAI
 
-#This file contains the Dependency P
+from app.infrastructure.llm.client import (
+    get_llm_client as create_llm_client
+)
+
 
 def get_message() -> str:
     return "Hello from Dependency."
 
-# @router.get("/test")
-# def test(message: str = Depends(get_message)):
-#     return {
-#         "message": message
-#     }
 
-def provide_llm_client() -> OpenAI: # This function exposes dependency provided/created by get_llm_client()
-    return get_llm_client()
+def get_llm_client() -> OpenAI:
+    """
+    FastAPI dependency that provides the configured LLM client.
+    """
+    return create_llm_client()
